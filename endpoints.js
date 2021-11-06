@@ -1,28 +1,46 @@
-{
-  "name": "csgo-api-esports",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "dependencies": {
-    "express": "^4.17.1",
-    "hltv-api": "^3.0.0",
-    "endpoints": "^file:./endpoints"
-  },
-  "author": "dsanti",
-  "description": "csgo-api",
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/dsantix/csgo-api-esports.git"
-  },
-  "keywords": [
-    "csgo"
-  ],
-  "bugs": {
-    "url": "https://github.com/dsantix/csgo-api-esports/issues"
-  },
-  "homepage": "https://github.com/dsantix/csgo-api-esports#readme"
+function makeEndpoints(app, HLTV) {
+  app.get('/', async (_req, res) => {
+    const news = await HLTV.getNews()
+    res.json(news)
+  })
+
+  app.get('/results', async (_req, res) => {
+    const results = await HLTV.getResults()
+    res.json(results)
+  })
+
+  app.get('/matches', async (_req, res) => {
+    const matches = await HLTV.getMatches()
+    res.json(matches)
+  })
+
+  app.get('/results/:matchId/stats', async (req, res) => {
+    const { matchId } = req.params
+    const match = await HLTV.getMatchById(matchId)
+    res.json(match)
+  })
+
+  app.get('/players', async (_req, res) => {
+    const players = await HLTV.getTopPlayers()
+    res.json(players)
+  })
+
+  app.get('/players/:playerId', async (req, res) => {
+    const { playerId } = req.params
+    const player = await HLTV.getPlayerById(playerId)
+    res.json(player)
+  })
+
+  app.get('/teams', async (_req, res) => {
+    const teams = await HLTV.getTopTeams()
+    res.json(teams)
+  })
+
+  app.get('/teams/:teamId', async (req, res) => {
+    const { teamId } = req.params
+    const team = await HLTV.getTeamById(Number(teamId))
+    res.json(team)
+  })
 }
+
+module.exports = makeEndpoints
